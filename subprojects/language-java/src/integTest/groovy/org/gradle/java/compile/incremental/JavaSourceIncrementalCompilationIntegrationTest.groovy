@@ -22,6 +22,9 @@ import org.gradle.util.Requires
 import org.gradle.util.TestPrecondition
 import spock.lang.Issue
 
+import java.nio.file.Files
+import java.nio.file.Paths
+
 class JavaSourceIncrementalCompilationIntegrationTest extends BaseJavaSourceIncrementalCompilationIntegrationTest {
     CompiledLanguage language = CompiledLanguage.JAVA
 
@@ -180,5 +183,46 @@ class JavaSourceIncrementalCompilationIntegrationTest extends BaseJavaSourceIncr
         then:
         succeeds language.compileTaskName
         outputs.recompiledClasses('MyClass', 'MyAnnotation', 'TopLevel$Inner', 'TopLevel')
+    }
+
+    @Requires(TestPrecondition.SYMLINKS)
+    @Issue("https://github.com/gradle/gradle/issues/9202")
+    def "source mapping file works with symlinks"() {
+        given:
+        buildFile << """
+            sourceSets {
+                main {
+                    ${languageName} {
+                        srcDirs = ['src/main/${languageName}/build', 'src/main/${languageName}/linkparent']
+                    }
+                }
+            }
+        """
+        file("other/foo/a/MyClass.${languageName}") << """package foo.a;
+            public class MyClass {
+                public void foo() { }
+            }
+        """
+        file("src/main/${languageName}/build/foo/b/Other.${languageName}") << """package foo.b;
+            import foo.a.MyClass;
+
+            public class Other {
+                public void hello(MyClass my) { my.foo(); }
+            }
+        """
+        Files.createSymbolicLink(Paths.get(file("src/main/${languageName}/linkparent").toURI()), Paths.get(file("other").toURI()))
+        outputs.snapshot { run language.compileTaskName }
+
+        when:
+        file("other/foo/a/MyClass.${languageName}").text = """package foo.a;
+            public class MyClass {
+                public void foo() { }
+                public void bar() { }
+            }
+        """
+
+        then:
+        succeeds language.compileTaskName
+        outputs.recompiledClasses('MyClass', 'Other')
     }
 }
