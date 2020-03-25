@@ -65,7 +65,7 @@ public class IncrementalCompileTask implements JavaCompiler.CompilationTask {
     public Boolean call() {
         if (delegate instanceof JavacTask) {
             TaskListener collector = new ClassNameCollector();
-            ((JavacTask) delegate).addTaskListener(collector);
+//            ((JavacTask) delegate).addTaskListener(collector);
         } else {
             throw new UnsupportedOperationException("Unexpected Java compile task : " + delegate.getClass().getName());
         }
