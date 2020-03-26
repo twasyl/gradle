@@ -71,7 +71,7 @@ public class JdkJavaCompiler implements Compiler<JavaCompileSpec>, Serializable 
         JavaCompiler.CompilationTask task = compiler.getTask(null, fileManager, null, options, spec.getClasses(), compilationUnits);
         File mappingFile = compileOptions.getIncrementalCompilationMappingFile();
         if (mappingFile != null) {
-//            task = new IncrementalCompileTask(mappingFile, new CompilationSourceDirs(spec.getSourceRoots()), task);
+            task = new IncrementalCompileTask(mappingFile, new CompilationSourceDirs(spec.getSourceRoots()), task);
         }
         Set<AnnotationProcessorDeclaration> annotationProcessors = spec.getEffectiveAnnotationProcessors();
         task = new AnnotationProcessingCompileTask(task, annotationProcessors, spec.getAnnotationProcessorPath(), result.getAnnotationProcessingResult());
