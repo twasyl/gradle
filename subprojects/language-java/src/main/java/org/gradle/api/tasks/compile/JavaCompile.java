@@ -191,7 +191,7 @@ public class JavaCompile extends AbstractCompile {
             oldMappings = readSourceClassesMappingFile(sourceClassesMappingFile);
             sourceFileClassNameConverter = new DefaultSourceFileClassNameConverter(oldMappings);
         }
-        sourceClassesMappingFile.delete();
+//        sourceClassesMappingFile.delete();
         spec.getCompileOptions().setIncrementalCompilationMappingFile(sourceClassesMappingFile);
         Compiler<JavaCompileSpec> compiler = createCompiler(spec);
         FileTree sources = getStableSources().getAsFileTree();
