@@ -18,6 +18,7 @@ package org.gradle.api.tasks.compile;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Multimap;
+import com.google.common.collect.MultimapBuilder;
 import org.gradle.api.Incubating;
 import org.gradle.api.JavaVersion;
 import org.gradle.api.file.FileCollection;
@@ -71,7 +72,6 @@ import java.io.File;
 import java.util.concurrent.Callable;
 
 import static org.gradle.api.internal.tasks.compile.SourceClassesMappingFileAccessor.mergeIncrementalMappingsIntoOldMappings;
-import static org.gradle.api.internal.tasks.compile.SourceClassesMappingFileAccessor.readSourceClassesMappingFile;
 
 /**
  * Compiles Java source files.
@@ -181,14 +181,18 @@ public class JavaCompile extends AbstractCompile {
 
     private void performIncrementalCompilation(InputChanges inputs, DefaultJavaCompileSpec spec) {
         boolean isUsingCliCompiler = isUsingCliCompiler(spec);
-        File sourceClassesMappingFile = getSourceClassesMappingFile();
+//        File sourceClassesMappingFile = getSourceClassesMappingFile();
         Multimap<String, String> oldMappings;
         SourceFileClassNameConverter sourceFileClassNameConverter;
         if (isUsingCliCompiler) {
             oldMappings = null;
             sourceFileClassNameConverter = new FileNameDerivingClassNameConverter();
         } else {
-            oldMappings = readSourceClassesMappingFile(sourceClassesMappingFile);
+//            oldMappings = readSourceClassesMappingFile(sourceClassesMappingFile);
+            oldMappings = MultimapBuilder.SetMultimapBuilder
+                .hashKeys()
+                .hashSetValues()
+                .build();
             sourceFileClassNameConverter = new DefaultSourceFileClassNameConverter(oldMappings);
         }
 //        sourceClassesMappingFile.delete();
@@ -211,7 +215,7 @@ public class JavaCompile extends AbstractCompile {
         if (workResult instanceof IncrementalCompilationResult && !isUsingCliCompiler) {
             // The compilation will generate the new mapping file
             // Only merge old mappings into new mapping on incremental recompilation
-            mergeIncrementalMappingsIntoOldMappings(sourceClassesMappingFile, getStableSources(), inputs, oldMappings);
+//            mergeIncrementalMappingsIntoOldMappings(sourceClassesMappingFile, getStableSources(), inputs, oldMappings);
         }
     }
 
