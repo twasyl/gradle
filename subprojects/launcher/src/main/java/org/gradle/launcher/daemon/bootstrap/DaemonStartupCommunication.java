@@ -47,6 +47,8 @@ public class DaemonStartupCommunication {
 
         // Encode as ascii
         try {
+//            ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+//            OutputStream outputStream = new EncodedStream.EncodedOutput(byteArrayOutputStream);
             OutputStream outputStream = new EncodedStream.EncodedOutput(target);
             FlushableEncoder encoder = new OutputStreamBackedEncoder(outputStream);
             encoder.writeNullableString(pid == null ? null : pid.toString());
@@ -55,6 +57,7 @@ public class DaemonStartupCommunication {
             new MultiChoiceAddressSerializer().write(encoder, multiChoiceAddress);
             encoder.writeString(daemonLog.getPath());
             encoder.flush();
+//            target.println(daemonGreeting() + byteArrayOutputStream.toString());
         } catch (IOException e) {
             throw new UncheckedIOException(e);
         }

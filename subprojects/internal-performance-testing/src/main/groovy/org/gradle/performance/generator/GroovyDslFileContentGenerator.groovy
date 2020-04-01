@@ -68,14 +68,14 @@ class GroovyDslFileContentGenerator extends FileContentGenerator {
             groovyOptions.forkOptions.memoryMaximumSize = compilerMemory
             groovyOptions.forkOptions.jvmArgs.addAll(javaCompileJvmArgs)
         }
-        
+
         tasks.withType(Test) {
             ${config.useTestNG ? 'useTestNG()' : ''}
             minHeapSize = testRunnerMemory
             maxHeapSize = testRunnerMemory
             maxParallelForks = ${config.maxParallelForks}
             forkEvery = testForkEvery
-            
+
             if (!JavaVersion.current().java8Compatible) {
                 jvmArgs '-XX:MaxPermSize=512m'
             }
