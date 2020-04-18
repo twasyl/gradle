@@ -56,7 +56,7 @@ fun Project.createTasks(sourceSet: SourceSet, testType: TestType) {
     // For all of the other executers, add an executer specific task
     testType.executers.forEach { executer ->
         val taskName = "$executer${prefix.capitalize()}Test"
-        createTestTask(taskName, executer, sourceSet, testType, Action {
+        registerIntegrationTestTask(taskName, executer, sourceSet, testType, Action {
             if (testType == TestType.CROSSVERSION) {
                 // the main crossVersion test tasks always only check the latest version,
                 // for true multi-version testing, we set up a test task per Gradle version,
@@ -66,10 +66,10 @@ fun Project.createTasks(sourceSet: SourceSet, testType: TestType) {
         })
     }
     // Use the default executer for the simply named task. This is what most developers will run when running check
-    val testTask = createTestTask(prefix + "Test", defaultExecuter, sourceSet, testType, Action {})
+    val testTask = registerIntegrationTestTask(prefix + "Test", defaultExecuter, sourceSet, testType, Action {})
     // Create a variant of the test suite to force realization of component metadata
     if (testType == TestType.INTEGRATION) {
-        createTestTask(prefix + "ForceRealizeTest", defaultExecuter, sourceSet, testType, Action {
+        registerIntegrationTestTask(prefix + "ForceRealizeTest", defaultExecuter, sourceSet, testType, Action {
             systemProperties["org.gradle.integtest.force.realize.metadata"] = "true"
         })
     }
@@ -77,7 +77,7 @@ fun Project.createTasks(sourceSet: SourceSet, testType: TestType) {
 }
 
 
-fun Project.createTestTask(name: String, executer: String, sourceSet: SourceSet, testType: TestType, extraConfig: Action<IntegrationTest>): TaskProvider<IntegrationTest> =
+fun Project.registerIntegrationTestTask(name: String, executer: String, sourceSet: SourceSet, testType: TestType, extraConfig: Action<IntegrationTest>): TaskProvider<IntegrationTest> =
     tasks.register(name, IntegrationTest::class) {
         project.bucketProvider().configureTest(this, sourceSet, testType)
         description = "Runs ${testType.prefix} with $executer executer"
