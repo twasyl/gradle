@@ -77,7 +77,6 @@ fun Project.createTasks(sourceSet: SourceSet, testType: TestType) {
 }
 
 
-internal
 fun Project.createTestTask(name: String, executer: String, sourceSet: SourceSet, testType: TestType, extraConfig: Action<IntegrationTest>): TaskProvider<IntegrationTest> =
     tasks.register(name, IntegrationTest::class) {
         project.bucketProvider().configureTest(this, sourceSet, testType)

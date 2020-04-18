@@ -13,7 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import org.gradle.gradlebuild.test.integrationtests.IntegrationTest
+import org.gradle.gradlebuild.test.integrationtests.TestType
+import org.gradle.gradlebuild.test.integrationtests.createTestTask
 import org.gradle.gradlebuild.testing.integrationtests.cleanup.WhenNotEmpty
 
 plugins {
@@ -46,10 +47,9 @@ dependencies {
     integTestRuntimeOnly(project(":testingJunitPlatform"))
 }
 
-tasks.register<IntegrationTest>("crossVersionTests") {
+createTestTask("crossVersionTests", "forking", sourceSets.integTest.get(), TestType.CROSSVERSION) {
     description = "Runs the TestKit version compatibility tests"
     systemProperties["org.gradle.integtest.testkit.compatibility"] = "all"
-    systemProperties["org.gradle.integtest.executer"] = "forking"
 }
 
 testFilesCleanup {
