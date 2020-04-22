@@ -650,7 +650,7 @@ public class DefaultConfiguration extends AbstractFileCollection implements Conf
             public BuildOperationDescriptor.Builder description() {
                 String displayName = "Resolve dependencies of " + identityPath;
                 Path projectPath = domainObjectContext.getProjectPath();
-                String projectPathString = domainObjectContext.isScript() ? null : (projectPath == null ? null : projectPath.getPath());
+                String projectPathString = projectPath.getPath();
                 return BuildOperationDescriptor.displayName(displayName)
                     .progressDisplayName(displayName)
                     .details(new ResolveConfigurationResolutionBuildOperationDetails(
