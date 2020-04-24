@@ -30,6 +30,10 @@ plugins {
 apply(from = "gradle/build-cache-configuration.settings.gradle.kts")
 apply(from = "gradle/shared-with-buildSrc/mirrors.settings.gradle.kts")
 
+// If you include a new subproject here, you will need to execute the
+// ./gradlew generateSubprojectsInfo
+// task to update metadata about the build for CI
+
 include("instantExecution")
 include("instantExecutionReport")
 include("apiMetadata")
@@ -88,6 +92,7 @@ include("platformNative")
 include("platformJvm")
 include("languageJvm")
 include("languageJava")
+include("javaCompilerPlugin")
 include("languageGroovy")
 include("languageNative")
 include("toolingNative")
