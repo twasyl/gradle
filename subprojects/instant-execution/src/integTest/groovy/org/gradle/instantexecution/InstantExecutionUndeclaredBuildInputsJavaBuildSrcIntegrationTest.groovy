@@ -16,35 +16,12 @@
 
 package org.gradle.instantexecution
 
-import org.gradle.api.Action
-import org.gradle.api.Plugin
-import org.gradle.api.Project
-import org.gradle.api.Task
-
-class InstantExecutionUndeclaredBuildInputsJavaBuildSrcIntegrationTest extends AbstractInstantExecutionUndeclaredBuildInputsIntegrationTest {
+class InstantExecutionUndeclaredBuildInputsJavaBuildSrcIntegrationTest extends AbstractInstantExecutionUndeclaredBuildInputsIntegrationTest implements JavaPluginImplementation {
     @Override
-    void pluginDefinition() {
-        file("buildSrc/src/main/java/SneakyPlugin.java") << """
-            import ${Action.name};
-            import ${Project.name};
-            import ${Plugin.name};
-            import ${Task.name};
-
-            public class SneakyPlugin implements Plugin<Project> {
-                public void apply(Project project) {
-                    String ci = System.getProperty("CI");
-                    System.out.println("apply CI = " + ci);
-                    System.out.println("apply CI2 = " + System.getProperty("CI2"));
-                    project.getTasks().register("thing", t -> {
-                        t.doLast(new Action<Task>() {
-                            public void execute(Task t) {
-                                String ci2 = System.getProperty("CI");
-                                System.out.println("task CI = " + ci2);
-                            }
-                        });
-                    });
-                }
-            }
+    void buildLogicApplication() {
+        javaPlugin(file("buildSrc/src/main/java/SneakyPlugin.java"))
+        buildFile << """
+            apply plugin: SneakyPlugin
         """
     }
 }
