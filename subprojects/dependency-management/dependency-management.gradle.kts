@@ -16,10 +16,9 @@
 
 import accessors.java
 import org.gradle.gradlebuild.testing.integrationtests.cleanup.WhenNotEmpty
-import org.gradle.gradlebuild.unittestandcompile.ModuleType
 
 plugins {
-    `java-library`
+    gradlebuild.distribution.`core-api-java`
 }
 
 dependencies {
@@ -124,8 +123,12 @@ dependencies {
     crossVersionTestRuntimeOnly(project(":maven"))
 }
 
-gradlebuildJava {
-    moduleType = ModuleType.CORE
+strictCompile {
+    ignoreParameterizedVarargType() // TODO remove this and address warnings and/or add the RIGHT ignores here
+}
+
+classycle {
+    excludePatterns.set(listOf("org/gradle/**"))
 }
 
 testFilesCleanup {

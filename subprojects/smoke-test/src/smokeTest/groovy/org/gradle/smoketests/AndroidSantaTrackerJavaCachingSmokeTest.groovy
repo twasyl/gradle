@@ -34,12 +34,18 @@ import static org.junit.Assume.assumeThat
 @Requires(TestPrecondition.JDK11_OR_EARLIER)
 class AndroidSantaTrackerJavaCachingSmokeTest extends AbstractAndroidSantaTrackerSmokeTest {
 
+    // TODO:instant-execution remove once fixed upstream
+    @Override
+    protected int maxInstantExecutionProblems() {
+        return 100
+    }
+
     @Unroll
     @UnsupportedWithInstantExecution(iterationMatchers = [AGP_3_ITERATION_MATCHER, AGP_4_0_ITERATION_MATCHER])
     def "can cache Santa Tracker Java Android application (agp=#agpVersion)"() {
 
-        // 4.1.0 nightly has new cacheable tasks, remove this once alpha04 is out
-        assumeThat(agpVersion, not(equalTo("4.1.0-alpha03")))
+        // 4.1 nightly has less tasks
+        assumeThat(agpVersion, not(equalTo("4.1.0-alpha07")))
 
         given:
         def originalDir = temporaryFolder.createDir("original")
@@ -307,6 +313,7 @@ class AndroidSantaTrackerJavaCachingSmokeTest extends AbstractAndroidSantaTracke
         ':santa-tracker:preBuild': UP_TO_DATE,
         ':santa-tracker:preDevelopmentDebugBuild': UP_TO_DATE,
         ':santa-tracker:processDevelopmentDebugJavaRes': NO_SOURCE,
+        ':santa-tracker:processDevelopmentDebugMainManifest': FROM_CACHE,
         ':santa-tracker:processDevelopmentDebugManifest': FROM_CACHE,
         ':santa-tracker:processDevelopmentDebugManifestForPackage': FROM_CACHE,
         ':santa-tracker:processDevelopmentDebugResources': SUCCESS,

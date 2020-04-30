@@ -40,6 +40,10 @@ plugins {
 apply(from = "gradle/build-cache-configuration.settings.gradle.kts")
 apply(from = "gradle/shared-with-buildSrc/mirrors.settings.gradle.kts")
 
+// If you include a new subproject here, you will need to execute the
+// ./gradlew generateSubprojectsInfo
+// task to update metadata about the build for CI
+
 include("instantExecution")
 include("instantExecutionReport")
 include("apiMetadata")
@@ -82,6 +86,7 @@ include("internalTesting")
 include("internalIntegTesting")
 include("internalPerformanceTesting")
 include("internalAndroidPerformanceTesting")
+include("internalBuildReports")
 include("performance")
 include("buildScanPerformance")
 include("javascript")
@@ -97,6 +102,7 @@ include("platformNative")
 include("platformJvm")
 include("languageJvm")
 include("languageJava")
+include("javaCompilerPlugin")
 include("languageGroovy")
 include("languageNative")
 include("toolingNative")
@@ -127,6 +133,7 @@ include("fileCollections")
 include("files")
 include("hashing")
 include("snapshots")
+include("fileWatching")
 include("architectureTest")
 include("buildCachePackaging")
 include("execution")
@@ -155,7 +162,6 @@ rootProject.name = "gradle"
 // List of sub-projects that have a Groovy DSL build script.
 // The intent is for this list to diminish until it disappears.
 val groovyBuildScriptProjects = hashSetOf(
-    "distributions",
     "docs",
     "performance"
 )
@@ -178,11 +184,7 @@ for (project in rootProject.children) {
     }
 }
 
-val ignoredFeatures = setOf<FeaturePreviews.Feature>()
-
 FeaturePreviews.Feature.values().forEach { feature ->
-    if (feature.isActive && feature !in ignoredFeatures) {
-        enableFeaturePreview(feature.name)
-    }
+    if (feature.isActive) { enableFeaturePreview(feature.name) }
 }
 

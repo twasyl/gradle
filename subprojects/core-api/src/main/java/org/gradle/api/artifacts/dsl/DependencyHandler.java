@@ -23,7 +23,6 @@ import org.gradle.api.artifacts.query.ArtifactResolutionQuery;
 import org.gradle.api.artifacts.transform.TransformAction;
 import org.gradle.api.artifacts.transform.TransformParameters;
 import org.gradle.api.artifacts.transform.TransformSpec;
-import org.gradle.api.artifacts.transform.VariantTransform;
 import org.gradle.api.artifacts.type.ArtifactTypeContainer;
 import org.gradle.api.attributes.AttributesSchema;
 import org.gradle.api.plugins.ExtensionAware;
@@ -45,8 +44,9 @@ import java.util.Map;
  *
  * <p>Example shows a basic way of declaring dependencies.
  * <pre class='autoTested'>
- * apply plugin: 'java'
- * //so that we can use 'implementation', 'testImplementation' for dependencies
+ * plugins {
+ *     id 'java' // so that we can use 'implementation', 'testImplementation' for dependencies
+ * }
  *
  * dependencies {
  *   //for dependencies found in artifact repositories you can use
@@ -87,7 +87,9 @@ import java.util.Map;
  * </ul>
  *
  * <pre class='autoTestedWithDeprecations'>
- * apply plugin: 'java' //so that I can declare 'implementation' dependencies
+ * plugins {
+ *     id 'java' // so that I can declare 'implementation' dependencies
+ * }
  *
  * dependencies {
  *   implementation('org.hibernate:hibernate:3.1') {
@@ -112,7 +114,9 @@ import java.util.Map;
  * </ul>
  *
  * <pre class='autoTested'>
- * apply plugin: 'java' //so that I can declare 'implementation' dependencies
+ * plugins {
+ *     id 'java' // so that I can declare 'implementation' dependencies
+ * }
  *
  * dependencies {
  *   //configuring dependency to specific configuration of the module
@@ -161,8 +165,9 @@ import java.util.Map;
  * org.gradle.api.artifacts.ExternalModuleDependency}.</p>
  *
  * <pre class='autoTested'>
- * apply plugin: 'java'
- * //so that we can use 'implementation', 'testImplementation' for dependencies
+ * plugins {
+ *     id 'java' // so that we can use 'implementation', 'testImplementation' for dependencies
+ * }
  *
  * dependencies {
  *   //for dependencies found in artifact repositories you can use
@@ -195,8 +200,9 @@ import java.util.Map;
  * <code><i>configurationName</i> files('a file')</code>
  *
  * <pre class='autoTested'>
- * apply plugin: 'java'
- * //so that we can use 'implementation', 'testImplementation' for dependencies
+ * plugins {
+ *     id 'java' // so that we can use 'implementation', 'testImplementation' for dependencies
+ * }
  *
  * dependencies {
  *   //declaring arbitrary files as dependencies
@@ -225,8 +231,10 @@ import java.util.Map;
  *
  * <pre class='autoTested'>
  * //Our Gradle plugin is written in groovy
- * apply plugin: 'groovy'
- * //now we can use the 'implementation' configuration for declaring dependencies
+ * plugins {
+ *     id 'groovy'
+ * }
+ * // now we can use the 'implementation' configuration for declaring dependencies
  *
  * dependencies {
  *   //we will use the Groovy version that ships with Gradle:
@@ -442,7 +450,8 @@ public interface DependencyHandler extends ExtensionAware {
      * @since 3.5
      */
     @Deprecated
-    void registerTransform(Action<? super VariantTransform> registrationAction);
+    @SuppressWarnings("deprecation")
+    void registerTransform(Action<? super org.gradle.api.artifacts.transform.VariantTransform> registrationAction);
 
     /**
      * Registers an <a href="https://docs.gradle.org/current/userguide/artifact_transforms.html">artifact transform</a>.

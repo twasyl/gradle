@@ -17,6 +17,7 @@
 package org.gradle.smoketests
 
 import org.gradle.integtests.fixtures.ToBeFixedForInstantExecution
+import org.gradle.integtests.fixtures.UnsupportedWithInstantExecution
 import org.gradle.testkit.runner.BuildResult
 import org.gradle.util.Requires
 import org.gradle.util.TestPrecondition
@@ -35,11 +36,12 @@ import static org.junit.Assume.assumeThat
 class AndroidSantaTrackerKotlinCachingSmokeTest extends AbstractAndroidSantaTrackerSmokeTest {
 
     @Unroll
-    @ToBeFixedForInstantExecution
+    @UnsupportedWithInstantExecution(iterationMatchers = [AGP_3_ITERATION_MATCHER, AGP_4_0_ITERATION_MATCHER])
+    @ToBeFixedForInstantExecution(iterationMatchers = [AGP_4_1_ITERATION_MATCHER])
     def "can cache Santa Tracker Kotlin Android application (agp=#agpVersion)"() {
 
-        // 4.1.0 nightly has new cacheable tasks, remove this once alpha04 is out
-        assumeThat(agpVersion, not(equalTo("4.1.0-alpha03")))
+        // 4.1 nightly has less tasks
+        assumeThat(agpVersion, not(equalTo("4.1.0-alpha07")))
 
         given:
         def originalDir = temporaryFolder.createDir("original")
@@ -71,8 +73,8 @@ class AndroidSantaTrackerKotlinCachingSmokeTest extends AbstractAndroidSantaTrac
         def expectedResults = agpVersion.startsWith('3.6')
             ? EXPECTED_RESULTS_3_6
             : agpVersion.startsWith('4.0')
-                ? EXPECTED_RESULTS_4_0
-                : EXPECTED_RESULTS_4_1
+            ? EXPECTED_RESULTS_4_0
+            : EXPECTED_RESULTS_4_1
         verify(relocatedResult, expectedResults)
 
         when: 'clean cached build, reusing instant execution cache when enabled'
@@ -119,6 +121,7 @@ class AndroidSantaTrackerKotlinCachingSmokeTest extends AbstractAndroidSantaTrac
         ':cityquiz:preDebugBuild': UP_TO_DATE,
         ':cityquiz:processApplicationManifestDebugForBundle': FROM_CACHE,
         ':cityquiz:processDebugJavaRes': NO_SOURCE,
+        ':cityquiz:processDebugMainManifest': FROM_CACHE,
         ':cityquiz:processDebugManifest': FROM_CACHE,
         ':cityquiz:processDebugManifestForPackage': FROM_CACHE,
         ':cityquiz:processDebugResources': SUCCESS,
@@ -196,6 +199,7 @@ class AndroidSantaTrackerKotlinCachingSmokeTest extends AbstractAndroidSantaTrac
         ':dasherdancer:preDebugBuild': UP_TO_DATE,
         ':dasherdancer:processApplicationManifestDebugForBundle': FROM_CACHE,
         ':dasherdancer:processDebugJavaRes': NO_SOURCE,
+        ':dasherdancer:processDebugMainManifest': FROM_CACHE,
         ':dasherdancer:processDebugManifest': FROM_CACHE,
         ':dasherdancer:processDebugManifestForPackage': FROM_CACHE,
         ':dasherdancer:processDebugResources': SUCCESS,
@@ -271,6 +275,7 @@ class AndroidSantaTrackerKotlinCachingSmokeTest extends AbstractAndroidSantaTrac
         ':gumball:preDebugBuild': UP_TO_DATE,
         ':gumball:processApplicationManifestDebugForBundle': FROM_CACHE,
         ':gumball:processDebugJavaRes': NO_SOURCE,
+        ':gumball:processDebugMainManifest': FROM_CACHE,
         ':gumball:processDebugManifest': FROM_CACHE,
         ':gumball:processDebugManifestForPackage': FROM_CACHE,
         ':gumball:processDebugResources': SUCCESS,
@@ -308,6 +313,7 @@ class AndroidSantaTrackerKotlinCachingSmokeTest extends AbstractAndroidSantaTrac
         ':jetpack:preDebugBuild': UP_TO_DATE,
         ':jetpack:processApplicationManifestDebugForBundle': FROM_CACHE,
         ':jetpack:processDebugJavaRes': NO_SOURCE,
+        ':jetpack:processDebugMainManifest': FROM_CACHE,
         ':jetpack:processDebugManifest': FROM_CACHE,
         ':jetpack:processDebugManifestForPackage': FROM_CACHE,
         ':jetpack:processDebugResources': SUCCESS,
@@ -344,6 +350,7 @@ class AndroidSantaTrackerKotlinCachingSmokeTest extends AbstractAndroidSantaTrac
         ':memory:preDebugBuild': UP_TO_DATE,
         ':memory:processApplicationManifestDebugForBundle': FROM_CACHE,
         ':memory:processDebugJavaRes': NO_SOURCE,
+        ':memory:processDebugMainManifest': FROM_CACHE,
         ':memory:processDebugManifest': FROM_CACHE,
         ':memory:processDebugManifestForPackage': FROM_CACHE,
         ':memory:processDebugResources': SUCCESS,
@@ -380,6 +387,7 @@ class AndroidSantaTrackerKotlinCachingSmokeTest extends AbstractAndroidSantaTrac
         ':penguinswim:preDebugBuild': UP_TO_DATE,
         ':penguinswim:processApplicationManifestDebugForBundle': FROM_CACHE,
         ':penguinswim:processDebugJavaRes': NO_SOURCE,
+        ':penguinswim:processDebugMainManifest': FROM_CACHE,
         ':penguinswim:processDebugManifest': FROM_CACHE,
         ':penguinswim:processDebugManifestForPackage': FROM_CACHE,
         ':penguinswim:processDebugResources': SUCCESS,
@@ -455,6 +463,7 @@ class AndroidSantaTrackerKotlinCachingSmokeTest extends AbstractAndroidSantaTrac
         ':presenttoss:preDebugBuild': UP_TO_DATE,
         ':presenttoss:processApplicationManifestDebugForBundle': FROM_CACHE,
         ':presenttoss:processDebugJavaRes': NO_SOURCE,
+        ':presenttoss:processDebugMainManifest': FROM_CACHE,
         ':presenttoss:processDebugManifest': FROM_CACHE,
         ':presenttoss:processDebugManifestForPackage': FROM_CACHE,
         ':presenttoss:processDebugResources': SUCCESS,
@@ -492,6 +501,7 @@ class AndroidSantaTrackerKotlinCachingSmokeTest extends AbstractAndroidSantaTrac
         ':rocketsleigh:preDebugBuild': UP_TO_DATE,
         ':rocketsleigh:processApplicationManifestDebugForBundle': FROM_CACHE,
         ':rocketsleigh:processDebugJavaRes': NO_SOURCE,
+        ':rocketsleigh:processDebugMainManifest': FROM_CACHE,
         ':rocketsleigh:processDebugManifest': FROM_CACHE,
         ':rocketsleigh:processDebugManifestForPackage': FROM_CACHE,
         ':rocketsleigh:processDebugResources': SUCCESS,
@@ -534,6 +544,7 @@ class AndroidSantaTrackerKotlinCachingSmokeTest extends AbstractAndroidSantaTrac
         ':santa-tracker:preBuild': UP_TO_DATE,
         ':santa-tracker:preDebugBuild': FROM_CACHE,
         ':santa-tracker:processDebugJavaRes': NO_SOURCE,
+        ':santa-tracker:processDebugMainManifest': FROM_CACHE,
         ':santa-tracker:processDebugManifest': FROM_CACHE,
         ':santa-tracker:processDebugManifestForPackage': FROM_CACHE,
         ':santa-tracker:processDebugResources': SUCCESS,
@@ -572,6 +583,7 @@ class AndroidSantaTrackerKotlinCachingSmokeTest extends AbstractAndroidSantaTrac
         ':snowballrun:preDebugBuild': UP_TO_DATE,
         ':snowballrun:processApplicationManifestDebugForBundle': FROM_CACHE,
         ':snowballrun:processDebugJavaRes': NO_SOURCE,
+        ':snowballrun:processDebugMainManifest': FROM_CACHE,
         ':snowballrun:processDebugManifest': FROM_CACHE,
         ':snowballrun:processDebugManifestForPackage': FROM_CACHE,
         ':snowballrun:processDebugResources': SUCCESS,
@@ -652,6 +664,7 @@ class AndroidSantaTrackerKotlinCachingSmokeTest extends AbstractAndroidSantaTrac
         ':wearable:preBuild': UP_TO_DATE,
         ':wearable:preDebugBuild': UP_TO_DATE,
         ':wearable:processDebugJavaRes': NO_SOURCE,
+        ':wearable:processDebugMainManifest': FROM_CACHE,
         ':wearable:processDebugManifest': FROM_CACHE,
         ':wearable:processDebugManifestForPackage': FROM_CACHE,
         ':wearable:processDebugResources': SUCCESS,

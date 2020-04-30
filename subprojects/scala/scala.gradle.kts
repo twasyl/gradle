@@ -14,10 +14,8 @@
  * limitations under the License.
  */
 
-import org.gradle.gradlebuild.unittestandcompile.ModuleType
-
 plugins {
-    `java-library`
+    gradlebuild.distribution.`plugins-api-java`
 }
 
 dependencies {
@@ -62,8 +60,10 @@ dependencies {
     integTestRuntimeOnly(project(":testingJunitPlatform"))
 }
 
-gradlebuildJava {
-    moduleType = ModuleType.CORE
+classycle {
+    excludePatterns.set(listOf("org/gradle/api/internal/tasks/scala/**",
+        // Unable to change package of public API
+        "org/gradle/api/tasks/ScalaRuntime*"))
 }
 
 tasks.named<Test>("integTest") {

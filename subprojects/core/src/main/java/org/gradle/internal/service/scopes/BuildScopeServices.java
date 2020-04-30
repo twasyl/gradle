@@ -104,7 +104,6 @@ import org.gradle.execution.ProjectConfigurer;
 import org.gradle.execution.TaskPathProjectEvaluator;
 import org.gradle.groovy.scripts.DefaultScriptCompilerFactory;
 import org.gradle.groovy.scripts.ScriptCompilerFactory;
-import org.gradle.internal.scripts.ScriptExecutionListener;
 import org.gradle.groovy.scripts.internal.BuildOperationBackedScriptCompilationHandler;
 import org.gradle.groovy.scripts.internal.BuildScopeInMemoryCachingScriptClassCompiler;
 import org.gradle.groovy.scripts.internal.CrossBuildInMemoryCachingScriptClassCache;
@@ -177,6 +176,7 @@ import org.gradle.internal.operations.logging.DefaultBuildOperationLoggerFactory
 import org.gradle.internal.reflect.Instantiator;
 import org.gradle.internal.resource.DefaultTextFileResourceLoader;
 import org.gradle.internal.resource.TextFileResourceLoader;
+import org.gradle.internal.scripts.ScriptExecutionListener;
 import org.gradle.internal.service.CachingServiceLocator;
 import org.gradle.internal.service.DefaultServiceRegistry;
 import org.gradle.internal.service.ServiceRegistry;
@@ -302,8 +302,11 @@ public class BuildScopeServices extends DefaultServiceRegistry {
         );
     }
 
-    protected ProviderFactory createProviderFactory(ValueSourceProviderFactory valueSourceProviderFactory) {
-        return new DefaultProviderFactory(valueSourceProviderFactory);
+    protected ProviderFactory createProviderFactory(
+        Instantiator instantiator,
+        ValueSourceProviderFactory valueSourceProviderFactory
+    ) {
+        return instantiator.newInstance(DefaultProviderFactory.class, valueSourceProviderFactory);
     }
 
     protected ActorFactory createActorFactory() {
@@ -350,17 +353,17 @@ public class BuildScopeServices extends DefaultServiceRegistry {
     protected FileCacheBackedScriptClassCompiler createFileCacheBackedScriptClassCompiler(
         BuildOperationExecutor buildOperationExecutor,
         CacheRepository cacheRepository,
-        ClassLoaderCache classLoaderCache,
         ClassLoaderHierarchyHasher classLoaderHierarchyHasher,
         DefaultScriptCompilationHandler scriptCompilationHandler,
+        CachedClasspathTransformer classpathTransformer,
         ProgressLoggerFactory progressLoggerFactory
     ) {
         return new FileCacheBackedScriptClassCompiler(
             cacheRepository,
             new BuildOperationBackedScriptCompilationHandler(scriptCompilationHandler, buildOperationExecutor),
             progressLoggerFactory,
-            classLoaderCache,
-            classLoaderHierarchyHasher);
+            classLoaderHierarchyHasher,
+            classpathTransformer);
     }
 
     protected ScriptPluginFactory createScriptPluginFactory(InstantiatorFactory instantiatorFactory, BuildOperationExecutor buildOperationExecutor, UserCodeApplicationContext userCodeApplicationContext) {
